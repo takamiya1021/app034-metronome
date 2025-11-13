@@ -1,0 +1,69 @@
+# ナノバナナ用プロンプト：App 34「メトロノーム」
+
+## メイン画面の完成イメージ
+
+```
+Modern web application UI design for a minimalist metronome app.
+Dark background (#1a1a1a to #2d2d2d gradient) with subtle musical note patterns.
+
+Center top: Animated pendulum illustration
+- Classic wooden metronome pendulum swinging smoothly
+- Pivot point at top
+- Metal weight at bottom
+- Motion blur effect showing movement
+- Subtle shadow
+
+Large BPM display:
+- Huge number "120" in bold white font
+- Label "BPM" below in smaller text
+
+Tempo slider:
+- Horizontal slider bar with blue-green gradient (#3b82f6 to #10b981)
+- Circular handle at current position
+- Min "40" on left, Max "240" on right
+- Active track glowing effect
+
+Input section:
+- Text input box for direct BPM entry
+- "Tap Tempo" button with tap icon 🎵
+
+Controls section:
+- Time signature selector: "4/4" dropdown showing (2/4, 3/4, 4/4, 5/4, 6/8, 7/8, 9/8, 12/8)
+- Sound type selector: "クラシック" dropdown showing sound icons
+- Accent toggle checkbox "✓ アクセント"
+- Subdivision selector: "8分音符" dropdown
+
+Beat indicator:
+- Four circular dots representing 4 beats
+- First dot orange (accent beat), others blue
+- Active beat glows and scales up
+- Dots arranged horizontally
+
+Large play/pause button:
+- Circular button with play ▶ or pause ⏸ icon
+- Blue-green gradient with glow effect
+
+Presets section:
+- Chips/pills showing: [Allegro] [ロック] [ジャズ] [Andante]
+- [+ 新規プリセット] button
+
+Bottom: AI section with sparkle icon ✨
+- Cards: "🎯 リズムトレーニング" and "🎼 ジャンル別BPM提案"
+
+Color scheme:
+- Background: Dark gray (#1a1a1a)
+- Primary: Blue (#3b82f6) to Green (#10b981)
+- Accent (strong beat): Orange (#f97316)
+- Regular beat: Blue (#3b82f6)
+- Text: White (#ffffff)
+
+Typography: Clean modern sans-serif Japanese font
+Style: Minimalist, musical, professional app aesthetic with smooth animations
+Layout: Vertical, centered, mobile-friendly responsive design
+
+--ar 9:16 --style clean digital interface --quality high
+```
+
+## 使い方
+このプロンプトをナノバナナにコピー&ペーストして画像生成してください。
+生成された画像を `complete-image.png` として保存してください。
