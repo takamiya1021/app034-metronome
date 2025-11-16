@@ -53,6 +53,7 @@ export default function Home() {
   const [currentBeat, setCurrentBeat] = useState(0);
   const [metronome, setMetronome] = useState<Metronome | null>(null);
   const [tapTempo] = useState(() => new TapTempo());
+  const [volume, setVolume] = useState(0.7); // Default volume 70%
   const [apiKey, setApiKey] = useState('');
   const [aiContent, setAiContent] = useState({ rhythm: '', genre: '' });
   const [isGenerating, setIsGenerating] = useState(false);
@@ -83,6 +84,13 @@ export default function Home() {
       saveLastConfig(config);
     }
   }, [config, metronome]);
+
+  // Update volume when changed
+  useEffect(() => {
+    if (metronome) {
+      metronome.setVolume(volume);
+    }
+  }, [volume, metronome]);
 
   // Track current beat
   useEffect(() => {
@@ -128,11 +136,6 @@ export default function Home() {
   };
 
   const handleGenerateAI = async () => {
-    if (!apiKey) {
-      alert('APIキーを設定してください');
-      return;
-    }
-
     setIsGenerating(true);
     try {
       const [rhythm, genre] = await Promise.all([
@@ -157,9 +160,9 @@ export default function Home() {
     }
   };
 
-  const handleApiKeySave = () => {
-    saveAPIKey(apiKey);
-    alert('APIキーを保存しました');
+  const handleApiKeyChange = (value: string) => {
+    setApiKey(value);
+    saveAPIKey(value); // Auto-save on change
   };
 
   return (
@@ -170,9 +173,44 @@ export default function Home() {
 
         {/* BPM Display and Pendulum Area */}
         <div className="bg-gray-800 rounded-lg p-8 mb-6">
-          <div className="text-center mb-6">
-            <div className="text-7xl font-bold mb-2">{config.bpm}</div>
-            <div className="text-gray-400 text-xl">BPM</div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+            {/* BPM Display */}
+            <div className="text-center">
+              <div className="text-7xl font-bold mb-2">{config.bpm}</div>
+              <div className="text-gray-400 text-xl">BPM</div>
+            </div>
+
+            {/* Visual Metronome Pendulum */}
+            <div className="flex items-center justify-center">
+              <div className="relative w-48 h-48">
+                {/* Base */}
+                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-32 h-4 bg-gradient-to-b from-amber-700 to-amber-900 rounded-sm"></div>
+
+                {/* Scale marks */}
+                <div className="absolute top-8 left-4 w-1 h-12 bg-gray-600 -rotate-45 origin-bottom"></div>
+                <div className="absolute top-8 right-4 w-1 h-12 bg-gray-600 rotate-45 origin-bottom"></div>
+
+                {/* Pendulum rod */}
+                <div
+                  className="absolute bottom-4 left-1/2 -translate-x-1/2 origin-bottom transition-transform duration-200 ease-in-out"
+                  style={{
+                    transform: `translateX(-50%) rotate(${
+                      isPlaying
+                        ? (currentBeat % 2 === 0 ? -30 : 30)
+                        : 0
+                    }deg)`,
+                    transitionDuration: isPlaying ? `${60 / config.bpm}s` : '0.2s',
+                  }}
+                >
+                  <div className="w-2 h-32 bg-gradient-to-b from-gray-400 to-gray-600 rounded-full"></div>
+                  {/* Pendulum weight */}
+                  <div className="absolute -bottom-6 left-1/2 -translate-x-1/2 w-8 h-12 bg-gradient-to-b from-yellow-600 to-yellow-800 rounded-full"></div>
+                </div>
+
+                {/* Center pivot */}
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-3 h-3 bg-gray-700 rounded-full z-10"></div>
+              </div>
+            </div>
           </div>
 
           {/* BPM Slider */}
@@ -225,6 +263,19 @@ export default function Home() {
 
         {/* Controls */}
         <div className="bg-gray-800 rounded-lg p-6 mb-6">
+          {/* Volume Control */}
+          <div className="mb-4">
+            <label className="block text-sm text-gray-400 mb-2">音量: {Math.round(volume * 100)}%</label>
+            <input
+              type="range"
+              min="0"
+              max="100"
+              value={volume * 100}
+              onChange={(e) => setVolume(Number(e.target.value) / 100)}
+              className="w-full h-2 bg-gray-700 rounded-lg appearance-none cursor-pointer"
+            />
+          </div>
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             {/* Time Signature */}
             <div>
@@ -323,26 +374,29 @@ export default function Home() {
         <div className="bg-gray-800 rounded-lg p-6 mb-6">
           <h2 className="text-xl font-semibold mb-4">✨ AI提案</h2>
 
+          {/* Warning if API key is not set */}
+          {!apiKey && (
+            <div className="bg-red-900/30 border border-red-500 text-red-200 rounded px-4 py-3 mb-4">
+              <p className="text-sm">
+                ⚠️ APIキーを設定していない場合、提案はデフォルトの内容です
+              </p>
+            </div>
+          )}
+
           {/* API Key Input */}
-          <div className="flex gap-2 mb-4">
+          <div className="mb-4">
             <input
               type="password"
               value={apiKey}
-              onChange={(e) => setApiKey(e.target.value)}
-              placeholder="Google AI Studio APIキー"
-              className="flex-1 bg-gray-700 rounded px-4 py-2"
+              onChange={(e) => handleApiKeyChange(e.target.value)}
+              placeholder="Google AI Studio APIキー（自動保存）"
+              className="w-full bg-gray-700 rounded px-4 py-2"
             />
-            <button
-              onClick={handleApiKeySave}
-              className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded"
-            >
-              保存
-            </button>
           </div>
 
           <button
             onClick={handleGenerateAI}
-            disabled={isGenerating || !apiKey}
+            disabled={isGenerating}
             className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 px-6 py-3 rounded font-semibold mb-4"
           >
             {isGenerating ? '生成中...' : 'AI提案を生成'}

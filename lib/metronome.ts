@@ -206,6 +206,14 @@ export class Metronome {
     this.subdivision = subdivision;
   }
 
+  setVolume(volume: number): void {
+    this.audioEngine.setVolume(volume);
+  }
+
+  getVolume(): number {
+    return this.audioEngine.getVolume();
+  }
+
   /**
    * Clean up resources
    */

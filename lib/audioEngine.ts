@@ -60,10 +60,12 @@ const DEFAULT_CLICK = {
 export class AudioEngine {
   public audioContext: AudioContext;
   private gainNode: GainNode;
+  private masterVolume: number = 0.7; // Default volume (0.0 to 1.0)
 
   constructor() {
     this.audioContext = new AudioContext();
     this.gainNode = this.audioContext.createGain();
+    this.gainNode.gain.value = this.masterVolume;
     this.gainNode.connect(this.audioContext.destination);
   }
 
@@ -96,13 +98,29 @@ export class AudioEngine {
     osc.type = type;
     osc.frequency.value = frequency;
     osc.connect(gain);
-    gain.connect(this.audioContext.destination);
+    gain.connect(this.gainNode); // Connect to master gain node
 
     gain.gain.value = volume;
     gain.gain.exponentialRampToValueAtTime(0.001, time + duration);
 
     osc.start(time);
     osc.stop(time + duration);
+  }
+
+  /**
+   * Set master volume
+   * @param volume - Volume level (0.0 to 1.0)
+   */
+  setVolume(volume: number): void {
+    this.masterVolume = Math.max(0, Math.min(1, volume));
+    this.gainNode.gain.value = this.masterVolume;
+  }
+
+  /**
+   * Get current master volume
+   */
+  getVolume(): number {
+    return this.masterVolume;
   }
 
   /**
