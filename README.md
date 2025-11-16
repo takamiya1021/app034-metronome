@@ -234,7 +234,7 @@ MIT License
 
 ## 👤 作者
 
-**Hiroaki (あおい)**
+**吉倉大晄 (Yoshikura Hiroaki)**
 - GitHub: [@takamiya1021](https://github.com/takamiya1021)
 
 ## 🙏 謝辞
