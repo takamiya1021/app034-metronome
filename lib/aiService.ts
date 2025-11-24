@@ -8,6 +8,8 @@ export interface AIGenerationOptions {
   apiKey: string;
   bpm: number;
   timeSignature: string;
+  soundType: string;
+  subdivision: string;
   genre?: string;
 }
 
@@ -25,8 +27,14 @@ export async function generateRhythmTraining(
   }
 
   const prompt = `あなたはリズムトレーニングの専門家です。
-現在のBPM ${options.bpm}、拍子 ${options.timeSignature} で練習している人に向けて、
-効果的なリズムトレーニングメニューを150文字程度で提案してください。
+以下の設定で練習しているユーザーに向けて、効果的なリズムトレーニングメニューを150文字程度で提案してください。
+
+【設定】
+- BPM: ${options.bpm}
+- 拍子: ${options.timeSignature}
+- 音色: ${options.soundType}（この音色から想定される楽器やジャンルを考慮してください）
+- サブディビジョン: ${options.subdivision}（この音符の細かさを意識した練習を提案してください）
+
 段階的なテンポアップの方法も含めてください。`;
 
   try {
@@ -84,10 +92,15 @@ export async function generateGenreBPM(
     return `【デフォルト提案】現在のBPM ${bpm} は${suggestion}`;
   }
 
-  const genre = options.genre || '一般的な音楽';
   const prompt = `あなたは音楽プロデューサーです。
-${genre}（ジャンル）に適したBPMと、
-そのジャンル特有のリズムパターンを100文字程度で提案してください。`;
+以下の設定を使用しているユーザーに対して、適した音楽ジャンルとそのジャンル特有のリズムパターンを100文字程度で提案してください。
+
+【設定】
+- BPM: ${options.bpm}
+- 音色: ${options.soundType}（重要：この音色からユーザーが演奏したいジャンルを推測してください）
+- 拍子: ${options.timeSignature}
+
+音色とBPMの組み合わせから、最も適したジャンルを具体的に挙げてください。`;
 
   try {
     const response = await fetch(`${GOOGLE_AI_API_URL}?key=${options.apiKey}`, {

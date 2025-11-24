@@ -53,7 +53,7 @@ export default function Home() {
   const [currentBeat, setCurrentBeat] = useState(0);
   const [metronome, setMetronome] = useState<Metronome | null>(null);
   const [tapTempo] = useState(() => new TapTempo());
-  const [volume, setVolume] = useState(0.7); // Default volume 70%
+  const [volume, setVolume] = useState(1.0); // Default volume 100%
   const [apiKey, setApiKey] = useState('');
   const [aiContent, setAiContent] = useState({ rhythm: '', genre: '' });
   const [isGenerating, setIsGenerating] = useState(false);
@@ -143,11 +143,15 @@ export default function Home() {
           apiKey,
           bpm: config.bpm,
           timeSignature: `${config.timeSignature.beats}/${config.timeSignature.noteValue}`,
+          soundType: config.soundType,
+          subdivision: config.subdivision,
         }),
         generateGenreBPM({
           apiKey,
           bpm: config.bpm,
           timeSignature: `${config.timeSignature.beats}/${config.timeSignature.noteValue}`,
+          soundType: config.soundType,
+          subdivision: config.subdivision,
         }),
       ]);
 
@@ -194,11 +198,10 @@ export default function Home() {
                 <div
                   className="absolute bottom-4 left-1/2 -translate-x-1/2 origin-bottom transition-transform duration-200 ease-in-out"
                   style={{
-                    transform: `translateX(-50%) rotate(${
-                      isPlaying
-                        ? (currentBeat % 2 === 0 ? -30 : 30)
-                        : 0
-                    }deg)`,
+                    transform: `translateX(-50%) rotate(${isPlaying
+                      ? (currentBeat % 2 === 0 ? -30 : 30)
+                      : 0
+                      }deg)`,
                     transitionDuration: isPlaying ? `${60 / config.bpm}s` : '0.2s',
                   }}
                 >
@@ -242,7 +245,12 @@ export default function Home() {
             />
             <button
               onClick={handleTapTempo}
-              className="bg-cyan-600 hover:bg-cyan-700 px-6 py-2 rounded font-semibold"
+              disabled={isPlaying}
+              className={`px-6 py-2 rounded font-semibold transition-colors ${isPlaying
+                ? 'bg-gray-600 cursor-not-allowed opacity-50'
+                : 'bg-cyan-600 hover:bg-cyan-700'
+                }`}
+              title={isPlaying ? 'メトロノーム停止中のみ使用可能' : 'タップしてBPMを検出'}
             >
               Tap Tempo
             </button>
@@ -253,9 +261,8 @@ export default function Home() {
             {Array.from({ length: config.timeSignature.beats }).map((_, i) => (
               <div
                 key={i}
-                className={`w-12 h-12 rounded-full transition-all ${
-                  i === 0 ? 'bg-orange-500' : 'bg-blue-500'
-                } ${isPlaying && currentBeat === i ? 'opacity-100 scale-110' : 'opacity-30 scale-100'}`}
+                className={`w-12 h-12 rounded-full transition-all ${i === 0 ? 'bg-orange-500' : 'bg-blue-500'
+                  } ${isPlaying && currentBeat === i ? 'opacity-100 scale-110' : 'opacity-30 scale-100'}`}
               />
             ))}
           </div>
@@ -344,11 +351,10 @@ export default function Home() {
           {/* Play/Stop Button */}
           <button
             onClick={handlePlayStop}
-            className={`w-full py-4 rounded-full text-xl font-bold transition-colors ${
-              isPlaying
-                ? 'bg-red-600 hover:bg-red-700'
-                : 'bg-green-600 hover:bg-green-700'
-            }`}
+            className={`w-full py-4 rounded-full text-xl font-bold transition-colors ${isPlaying
+              ? 'bg-red-600 hover:bg-red-700'
+              : 'bg-green-600 hover:bg-green-700'
+              }`}
           >
             {isPlaying ? '⏸ 停止' : '▶ 再生'}
           </button>

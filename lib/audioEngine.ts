@@ -60,7 +60,7 @@ const DEFAULT_CLICK = {
 export class AudioEngine {
   public audioContext: AudioContext;
   private gainNode: GainNode;
-  private masterVolume: number = 0.7; // Default volume (0.0 to 1.0)
+  private masterVolume: number = 1.0; // Default volume (0.0 to 1.0)
 
   constructor() {
     this.audioContext = new AudioContext();
