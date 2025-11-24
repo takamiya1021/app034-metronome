@@ -27,7 +27,7 @@ export async function generateRhythmTraining(
   }
 
   const prompt = `あなたはリズムトレーニングの専門家です。
-以下の設定で練習しているユーザーに向けて、効果的なリズムトレーニングメニューを150文字程度で提案してください。
+以下の設定で練習しているユーザーに向けて、効果的なリズムトレーニングメニューを1000文字以内で、具体的かつ詳細に提案してください。
 
 【設定】
 - BPM: ${options.bpm}
@@ -35,7 +35,7 @@ export async function generateRhythmTraining(
 - 音色: ${options.soundType}（この音色から想定される楽器やジャンルを考慮してください）
 - サブディビジョン: ${options.subdivision}（この音符の細かさを意識した練習を提案してください）
 
-段階的なテンポアップの方法も含めてください。`;
+段階的なテンポアップの方法や、注意すべきポイントも含めてください。`;
 
   try {
     const response = await fetch(`${GOOGLE_AI_API_URL}?key=${options.apiKey}`, {
@@ -93,14 +93,14 @@ export async function generateGenreBPM(
   }
 
   const prompt = `あなたは音楽プロデューサーです。
-以下の設定を使用しているユーザーに対して、適した音楽ジャンルとそのジャンル特有のリズムパターンを100文字程度で提案してください。
+以下の設定を使用しているユーザーに対して、適した音楽ジャンルとそのジャンル特有のリズムパターンを1000文字以内で、具体的かつ詳細に提案してください。
 
 【設定】
 - BPM: ${options.bpm}
 - 音色: ${options.soundType}（重要：この音色からユーザーが演奏したいジャンルを推測してください）
 - 拍子: ${options.timeSignature}
 
-音色とBPMの組み合わせから、最も適したジャンルを具体的に挙げてください。`;
+音色とBPMの組み合わせから、最も適したジャンルを具体的に挙げ、その特徴や演奏のコツを解説してください。`;
 
   try {
     const response = await fetch(`${GOOGLE_AI_API_URL}?key=${options.apiKey}`, {
