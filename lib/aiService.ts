@@ -37,6 +37,10 @@ export async function generateRhythmTraining(
 
 段階的なテンポアップの方法や、注意すべきポイントも含めてください。`;
 
+  // Set timeout for API request (30 seconds)
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
   try {
     const response = await fetch(`${GOOGLE_AI_API_URL}?key=${options.apiKey}`, {
       method: 'POST',
@@ -50,7 +54,10 @@ export async function generateRhythmTraining(
           }]
         }]
       }),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`API request failed: ${response.statusText}`);
@@ -65,6 +72,10 @@ export async function generateRhythmTraining(
 
     return text;
   } catch (error) {
+    clearTimeout(timeoutId);
+    if ((error as Error).name === 'AbortError') {
+      throw new Error('API request timed out (30 seconds)');
+    }
     console.error('AI generation error:', error);
     throw error;
   }
@@ -102,6 +113,10 @@ export async function generateGenreBPM(
 
 音色とBPMの組み合わせから、最も適したジャンルを具体的に挙げ、その特徴や演奏のコツを解説してください。`;
 
+  // Set timeout for API request (30 seconds)
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000);
+
   try {
     const response = await fetch(`${GOOGLE_AI_API_URL}?key=${options.apiKey}`, {
       method: 'POST',
@@ -115,7 +130,10 @@ export async function generateGenreBPM(
           }]
         }]
       }),
+      signal: controller.signal,
     });
+
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
       throw new Error(`API request failed: ${response.statusText}`);
@@ -130,6 +148,10 @@ export async function generateGenreBPM(
 
     return text;
   } catch (error) {
+    clearTimeout(timeoutId);
+    if ((error as Error).name === 'AbortError') {
+      throw new Error('API request timed out (30 seconds)');
+    }
     console.error('AI generation error:', error);
     throw error;
   }

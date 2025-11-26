@@ -57,6 +57,7 @@ export default function Home() {
   const [apiKey, setApiKey] = useState('');
   const [aiContent, setAiContent] = useState({ rhythm: '', genre: '' });
   const [isGenerating, setIsGenerating] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
 
   // Initialize metronome
   useEffect(() => {
@@ -378,10 +379,23 @@ export default function Home() {
 
         {/* AI Section */}
         <div className="bg-gray-800 rounded-lg p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">✨ AI提案</h2>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold">✨ AI提案</h2>
+            <button
+              onClick={() => setIsSettingsModalOpen(true)}
+              className="text-gray-400 hover:text-white hover:rotate-90 transition-all duration-300"
+              title="API設定"
+            >
+              ⚙️
+            </button>
+          </div>
 
-          {/* Warning if API key is not set */}
-          {!apiKey && (
+          {/* API Key Status */}
+          {apiKey ? (
+            <div className="text-green-400 text-sm mb-4 flex items-center gap-2">
+              ✓ APIキー設定済み
+            </div>
+          ) : (
             <div className="bg-red-900/30 border border-red-500 text-red-200 rounded px-4 py-3 mb-4">
               <p className="text-sm">
                 ⚠️ APIキーを設定していない場合、提案はデフォルトの内容です
@@ -389,21 +403,10 @@ export default function Home() {
             </div>
           )}
 
-          {/* API Key Input */}
-          <div className="mb-4">
-            <input
-              type="password"
-              value={apiKey}
-              onChange={(e) => handleApiKeyChange(e.target.value)}
-              placeholder="Google AI Studio APIキー（自動保存）"
-              className="w-full bg-gray-700 rounded px-4 py-2"
-            />
-          </div>
-
           <button
             onClick={handleGenerateAI}
             disabled={isGenerating}
-            className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 px-6 py-3 rounded font-semibold mb-4"
+            className="w-full bg-purple-600 hover:bg-purple-700 disabled:bg-gray-600 px-6 py-3 rounded font-semibold mb-4 transition-colors"
           >
             {isGenerating ? '生成中...' : 'AI提案を生成'}
           </button>
@@ -426,6 +429,81 @@ export default function Home() {
             </div>
           )}
         </div>
+
+        {/* Settings Modal */}
+        {isSettingsModalOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm"
+            onClick={() => setIsSettingsModalOpen(false)}
+          >
+            <div
+              className="bg-gray-800 rounded-lg p-6 w-full max-w-md mx-4 shadow-2xl border border-gray-700"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-2xl font-bold">⚙️ API設定</h3>
+                <button
+                  onClick={() => setIsSettingsModalOpen(false)}
+                  className="text-gray-400 hover:text-white text-2xl transition-colors"
+                >
+                  ×
+                </button>
+              </div>
+
+              {/* Current Status */}
+              <div className="mb-4">
+                {apiKey ? (
+                  <div className="bg-green-900/30 border border-green-500 text-green-200 rounded px-4 py-3">
+                    <p className="text-sm flex items-center gap-2">
+                      ✓ APIキーが設定されています
+                    </p>
+                  </div>
+                ) : (
+                  <div className="bg-yellow-900/30 border border-yellow-500 text-yellow-200 rounded px-4 py-3">
+                    <p className="text-sm">
+                      ⚠️ APIキーが未設定です
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              {/* API Key Input */}
+              <div className="mb-6">
+                <label className="block text-sm text-gray-400 mb-2">
+                  Google AI Studio APIキー
+                </label>
+                <input
+                  type="password"
+                  value={apiKey}
+                  onChange={(e) => handleApiKeyChange(e.target.value)}
+                  placeholder="APIキーを入力してください"
+                  className="w-full bg-gray-700 rounded px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                />
+                <p className="text-xs text-gray-500 mt-2">
+                  入力は自動的に保存されます
+                </p>
+              </div>
+
+              {/* Info */}
+              <div className="bg-gray-700/50 rounded p-4 mb-4">
+                <p className="text-xs text-gray-400">
+                  💡 <strong>Google AI Studio</strong> のAPIキーを使用します。
+                  <br />
+                  キーは暗号化されずローカルストレージに保存されます。
+                </p>
+              </div>
+
+              {/* Close Button */}
+              <button
+                onClick={() => setIsSettingsModalOpen(false)}
+                className="w-full bg-purple-600 hover:bg-purple-700 px-6 py-3 rounded font-semibold transition-colors"
+              >
+                閉じる
+              </button>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );
