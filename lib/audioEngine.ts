@@ -6,45 +6,46 @@
 import type { SoundType } from '../types/metronome';
 
 // Sound configuration constants
+// All gain values are multiplied by 1.2 for better audibility
 const SOUND_CONFIG = {
   classic: {
     type: 'sine' as OscillatorType,
     normalFreq: 900,
     accentFreq: 1200,
-    normalGain: 0.6,
-    accentGain: 1.0,
+    normalGain: 0.72,  // 0.6 * 1.2
+    accentGain: 1.0,   // Already at max, keep as is
     duration: 0.03,
   },
   digital: {
     type: 'square' as OscillatorType,
     normalFreq: 1200,
     accentFreq: 1500,
-    normalGain: 0.5,
-    accentGain: 0.8,
+    normalGain: 0.6,   // 0.5 * 1.2
+    accentGain: 0.96,  // 0.8 * 1.2
     duration: 0.02,
   },
   drumstick: {
     type: 'triangle' as OscillatorType,
     normalFreq: 1600,
     accentFreq: 2000,
-    normalGain: 0.6,
-    accentGain: 0.9,
+    normalGain: 0.72,  // 0.6 * 1.2
+    accentGain: 1.0,   // 0.9 * 1.2 = 1.08, capped at 1.0
     duration: 0.015,
   },
   bell: {
     type: 'sine' as OscillatorType,
     normalFreq: 2000,
     accentFreq: 2400,
-    normalGain: 0.5,
-    accentGain: 0.7,
+    normalGain: 0.6,   // 0.5 * 1.2
+    accentGain: 0.84,  // 0.7 * 1.2
     duration: 0.08,
   },
   synth: {
     type: 'sawtooth' as OscillatorType,
     normalFreq: 600,
     accentFreq: 800,
-    normalGain: 0.4,
-    accentGain: 0.6,
+    normalGain: 0.48,  // 0.4 * 1.2
+    accentGain: 0.72,  // 0.6 * 1.2
     duration: 0.04,
   },
 } as const;
@@ -52,8 +53,8 @@ const SOUND_CONFIG = {
 const DEFAULT_CLICK = {
   normalFreq: 800,
   accentFreq: 1000,
-  normalGain: 0.7,
-  accentGain: 1.0,
+  normalGain: 0.84,  // 0.7 * 1.2
+  accentGain: 1.0,   // Already at max, keep as is
   duration: 0.05,
 } as const;
 
